@@ -1,0 +1,3 @@
+psutil==5.9.1
+websockets==10.3
+gpiozero~=1.6.2
