@@ -1,5 +1,7 @@
 # VD伴侣应用服务器
 
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+
 [中文](README_zh.md) | [English](README.md) | [Polski](README_pl.md)
 
 这就是VD连接服务器。它是一个websocket服务器，它被设计为在Raspberry Pi上运行，并且提供VD连接应用程序与设备信息。
