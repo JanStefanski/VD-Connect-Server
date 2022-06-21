@@ -7,5 +7,11 @@
         "debug": "True",
         "debug_without_raspberry": "False",
         "log_file": "log/server.log"
+    },
+    "reverse_led": "True",
+    "led_data": {
+        "red": 10,
+        "green": 11,
+        "blue": 9
     }
 }

@@ -8,10 +8,6 @@ import random
 import json
 from gpiozero import CPUTemperature, RGBLED
 
-led = RGBLED(red=17, green=27, blue=22)
-
-led.color = (0, 0, 0)
-
 
 def read_config():
     with open("config.json") as config_file:
@@ -23,6 +19,7 @@ class VDServer:
         self.websocket = None
         self.is_streaming = False
         self.debug_wo_raspberry = False
+        self.led = None
 
     async def start(self, websocket, path):
         self.websocket = websocket
@@ -41,6 +38,17 @@ class VDServer:
                     await self.send_device_info()
                 elif message == "board_info":
                     pass  # TODO: Send RPi board info
+                elif message == "turn_on_led":
+                    await self.turn_on_led()
+                    await self.websocket.send("[led_status]True")
+                elif message == "turn_off_led":
+                    await self.turn_off_led()
+                    await self.websocket.send("[led_status]False")
+                elif message.startswith("set_led_color_"):
+                    color = message.split("_")[3]
+                    print(color)
+                    await self.set_led_color(json.loads(color))
+
                 else:
                     await websocket.send("unknown_command")
             except websockets.ConnectionClosed:
@@ -69,10 +77,29 @@ class VDServer:
         }
         await self.websocket.send("[client_info]" + json.dumps(client_info))
 
+    async def turn_on_led(self):
+        self.led = RGBLED(red=config["led_data"]["red"], green=config["led_data"]["green"], blue=config["led_data"]["blue"])
+        await asyncio.sleep(0.1)
+        return True
+
+    async def turn_off_led(self):
+        self.led = None
+        await asyncio.sleep(0.1)
+        return True
+
+    async def set_led_color(self, color):
+        if self.led is not None:
+            if config["reverse_led"] == "True":
+                self.led.color = (1 - float(color["red"]), 1 - float(color["green"]), 1 - float(color["blue"]))
+            else:
+                self.led.color = (float(color["red"]), float(color["green"]), float(color["blue"]))
+            await asyncio.sleep(0.1)
+            return True
+        else:
+            return False
+
 
 async def main():
-    config = read_config()
-    server_config = config["server_config"]
     if not os.path.exists(server_config["log_file"]):
         os.makedirs(os.path.dirname(server_config["log_file"]))
 
@@ -94,6 +121,9 @@ async def main():
     ):
         await asyncio.Future()
 
+
+config = read_config()
+server_config = config["server_config"]
 
 if __name__ == "__main__":
     asyncio.run(main())
