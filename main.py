@@ -57,13 +57,14 @@ class VDServer:
 
     async def send_device_info(self):
         device_info = {
-            "cpu_temperature": round(CPUTemperature().temperature,
-                                     1) if self.debug_wo_raspberry is False else random.randint(0, 100),
+            "cpu_temperature": round(CPUTemperature().temperature, 1)
+            if self.debug_wo_raspberry is False
+            else random.randint(0, 100),
             "cpu_usage": psutil.cpu_percent(1),
             "memory_usage": psutil.virtual_memory()[2],
             "disk_usage": psutil.disk_usage("/").percent,
             "network_usage": psutil.net_io_counters().bytes_sent
-                             + psutil.net_io_counters().bytes_recv,
+            + psutil.net_io_counters().bytes_recv,
         }
         print(device_info["memory_usage"])
         await self.websocket.send("[device_info]" + json.dumps(device_info))
@@ -78,7 +79,11 @@ class VDServer:
         await self.websocket.send("[client_info]" + json.dumps(client_info))
 
     async def turn_on_led(self):
-        self.led = RGBLED(red=config["led_data"]["red"], green=config["led_data"]["green"], blue=config["led_data"]["blue"])
+        self.led = RGBLED(
+            red=config["led_data"]["red"],
+            green=config["led_data"]["green"],
+            blue=config["led_data"]["blue"],
+        )
         await asyncio.sleep(0.1)
         return True
 
@@ -90,9 +95,17 @@ class VDServer:
     async def set_led_color(self, color):
         if self.led is not None:
             if config["reverse_led"] == "True":
-                self.led.color = (1 - float(color["red"]), 1 - float(color["green"]), 1 - float(color["blue"]))
+                self.led.color = (
+                    1 - float(color["red"]),
+                    1 - float(color["green"]),
+                    1 - float(color["blue"]),
+                )
             else:
-                self.led.color = (float(color["red"]), float(color["green"]), float(color["blue"]))
+                self.led.color = (
+                    float(color["red"]),
+                    float(color["green"]),
+                    float(color["blue"]),
+                )
             await asyncio.sleep(0.1)
             return True
         else:
@@ -113,11 +126,11 @@ async def main():
     )
     server = VDServer()
     async with websockets.serve(
-            server.start,
-            server_config["host"],
-            server_config["port"],
-            close_timeout=server_config["close_timeout"],
-            ping_timeout=server_config["ping_timeout"],
+        server.start,
+        server_config["host"],
+        server_config["port"],
+        close_timeout=server_config["close_timeout"],
+        ping_timeout=server_config["ping_timeout"],
     ):
         await asyncio.Future()
 
