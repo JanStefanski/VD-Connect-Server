@@ -1,5 +1,7 @@
 # Serwer VD Connect
 
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+
 [Polski](README_pl.md) | [English](README.md) | [中文](README_zh.md)
 
 To jest serwer VD Connect. Działa on jako serwer websocket, który ma być uruchomiony na Raspberry Pi i ma za zadanie
