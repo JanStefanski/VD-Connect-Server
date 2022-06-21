@@ -1,5 +1,7 @@
 # VD Connect Server
 
+
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 [English](README.md) | [Polski](README_pl.md) | [中文](README_zh.md)
 
 This is the VD Connect server.

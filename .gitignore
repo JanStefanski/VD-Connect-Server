@@ -141,3 +141,11 @@ cython_debug/
 ### InteliJ Stuff
 
 .idea
+
+### VScode Stuff
+
+.vscode
+
+# logs
+
+log
