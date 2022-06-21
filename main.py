@@ -6,7 +6,11 @@ import os
 import psutil
 import random
 import json
-from gpiozero import CPUTemperature
+from gpiozero import CPUTemperature, RGBLED
+
+led = RGBLED(red=17, green=27, blue=22)
+
+led.color = (0, 0, 0)
 
 
 def read_config():
@@ -45,12 +49,13 @@ class VDServer:
 
     async def send_device_info(self):
         device_info = {
-            "cpu_temperature": round(CPUTemperature().temperature, 1) if self.debug_wo_raspberry is False else random.randint(0, 100),
+            "cpu_temperature": round(CPUTemperature().temperature,
+                                     1) if self.debug_wo_raspberry is False else random.randint(0, 100),
             "cpu_usage": psutil.cpu_percent(1),
             "memory_usage": psutil.virtual_memory()[2],
             "disk_usage": psutil.disk_usage("/").percent,
             "network_usage": psutil.net_io_counters().bytes_sent
-            + psutil.net_io_counters().bytes_recv,
+                             + psutil.net_io_counters().bytes_recv,
         }
         print(device_info["memory_usage"])
         await self.websocket.send("[device_info]" + json.dumps(device_info))
@@ -81,11 +86,11 @@ async def main():
     )
     server = VDServer()
     async with websockets.serve(
-        server.start,
-        server_config["host"],
-        server_config["port"],
-        close_timeout=server_config["close_timeout"],
-        ping_timeout=server_config["ping_timeout"],
+            server.start,
+            server_config["host"],
+            server_config["port"],
+            close_timeout=server_config["close_timeout"],
+            ping_timeout=server_config["ping_timeout"],
     ):
         await asyncio.Future()
 
