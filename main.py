@@ -58,8 +58,8 @@ class VDServer:
     async def send_device_info(self):
         device_info = {
             "cpu_temperature": round(CPUTemperature().temperature, 1)
-            if self.debug_wo_raspberry is False
-            else random.randint(0, 100),
+            if self.debug_wo_raspberry == "False"
+            else random.randint(47, 50),
             "cpu_usage": psutil.cpu_percent(1),
             "memory_usage": psutil.virtual_memory()[2],
             "disk_usage": psutil.disk_usage("/").percent,
